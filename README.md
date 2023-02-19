@@ -18,3 +18,7 @@ need to iterate through entire dictionary before adding to dictionary
 Bodge fixes to find better 
 - iterate through dict - created blank entry to make it start
 - add new entry to dict - made it check entire dict before entering through true/false condition
+
+Random stuff
+    Needs scapy and ipset to work
+    

@@ -11,7 +11,9 @@ info = {"Vectors": [{
     'Count': 0,
     'startTime': 0
 }]}
-record = {"Records": []}
+l = open('Record.json')
+record = json.load(l)
+l.close
 def firstStart():
     try:
         os.system("ipset creat black_list hash:ip")
@@ -40,6 +42,12 @@ def ipFound(dict):
 
 
 def pktHandle(i):
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        if current_time >= "23:06:00":
+            with open('Record.json','w') as file:
+                json.dump(record,file,indent=4)
+            exit()
         if i.haslayer("IP"):
             sourceIP = i["IP"].src
         else:
@@ -76,20 +84,15 @@ def scTest():
 
 print("TEST")
 
-
 #Testing
 def test():
     print("Test")
-    f = open('Record.json')
-    data = json.load(f)
-    for i in data['Records']:
-        if i['Count'] > 20:
-            print(i)
+    scTest()
 
 
 run = True
 while run == True:
-    ans = int(input("Press 1 for first setup. Press 2 for start. Press 3 for exit. >"))
+    ans = int(input("Press 1 for first setup. Press 2 for start. Press 3 for exit. Press 0 for Testing >"))
     if ans == 1:
         firstStart()
     elif ans == 2:
@@ -100,5 +103,5 @@ while run == True:
             outfile.write(json_object)
         os.system("ipset del black_list 192.168.129.191")
         exit()
-    else:
+    elif ans == 0:
         test()
