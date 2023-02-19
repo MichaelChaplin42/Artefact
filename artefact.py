@@ -17,7 +17,7 @@ def scTest():
     pkt = sniff(iface=r'Ethernet', prn=pktHandle)
 
 
-
+print("TEST")
 
 
 #Testing
