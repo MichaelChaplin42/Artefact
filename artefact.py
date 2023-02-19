@@ -3,6 +3,7 @@ from scapy.all import *
 from netaddr import *
 import os
 import time
+import json
 Threshold = 20
 
 info = {"Vectors": [{
@@ -10,6 +11,7 @@ info = {"Vectors": [{
     'Count': 0,
     'startTime': 0
 }]}
+record = {"Records": []}
 def firstStart():
     try:
         os.system("ipset creat black_list hash:ip")
@@ -22,11 +24,14 @@ def firstStart():
 #Creates iptables rule and ipset on first start
 def ipFound(dict):
     dict.update({'Count':dict['Count']+1})
-    print("COUNT UPDATED")
+    #print("COUNT UPDATED")
     diff = time.time() - dict['startTime']
     if diff > 60:
+        print
+        record["Records"].append(dict)
         dict.update({'Count':1})
         dict.update({'startTime':time.time()})
+        
     else:
         if dict['Count'] >= Threshold:
             print("Greater than threshold Blocking")
@@ -39,28 +44,26 @@ def pktHandle(i):
             sourceIP = i["IP"].src
         else:
             sourceIP = i.src
-        if sourceIP == "192.168.129.191":
-            print("PING DETECTED")
-            ipPresent = False
-            for i in info["Vectors"]: # iterates through dictionary
-                if i['IP']== sourceIP: # if ip is found
-                    ipPresent = True
-                    if i['Blocked'] == False:
-                        print("True")
-                        ipFound(i)
-                        
-                        break
+        print("PACKET DETECTED")
+        ipPresent = False
+        for i in info["Vectors"]: # iterates through dictionary
+            if i['IP']== sourceIP: # if ip is found
+                ipPresent = True
+                if i['Blocked'] == False:
+                    #print("True")
+                    ipFound(i)
+                    break
             
-            if ipPresent == False:   #Below creates an entry into the dictionaryj with the ip time and count if the ip is not found within the dictionary    
-                data = {
-                'IP': sourceIP,
-                'Count': 1,
-                'startTime': time.time(),
-                'Blocked': False
-                }
-                info["Vectors"].append(data)
+        if ipPresent == False:   #Below creates an entry into the dictionaryj with the ip time and count if the ip is not found within the dictionary    
+            data = {
+            'IP': sourceIP,
+            'Count': 1,
+            'startTime': time.time(),
+            'Blocked': False
+            }
+            info["Vectors"].append(data)
             
-            print(info)
+        #print(info)
 
 
 
@@ -75,6 +78,13 @@ print("TEST")
 
 
 #Testing
+def test():
+    print("Test")
+    f = open('Record.json')
+    data = json.load(f)
+    for i in data['Records']:
+        if i['Count'] > 20:
+            print(i)
 
 
 run = True
@@ -84,6 +94,11 @@ while run == True:
         firstStart()
     elif ans == 2:
         scTest()
-    else:
+    elif ans == 3:
+        json_object = json.dumps(record, indent=4)
+        with open("Record.json","a+") as outfile:
+            outfile.write(json_object)
         os.system("ipset del black_list 192.168.129.191")
         exit()
+    else:
+        test()
