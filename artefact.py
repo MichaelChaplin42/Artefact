@@ -4,18 +4,20 @@ from scapy.all import *
 def pktHandle(i):
         if i.haslayer("IP"):
             sourceIP = i["IP"].src
-            return True
         else:
             sourceIP = i.src
-            print(sourceIP)
-            print(i)
-            print(i.show())
+        if sourceIP == "172.217.169.46":
+            print("SENT PACKET")
+        else:
+            print("Recieved Packet")
+        print(sourceIP)
+
 
 
 def scTest():
     print("scTest")
     conf.verb = 0 
-    pkt = sniff(iface=r'Ethernet', prn=pktHandle)
+    pkt = sniff(iface=r'enp0s3', prn=pktHandle)
 
 
 print("TEST")
