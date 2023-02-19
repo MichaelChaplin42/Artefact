@@ -1,15 +1,31 @@
 #!/usr/bin/env python3
 from scapy.all import *
-
+from netaddr import *
+import os
+import time
+try:
+    os.system("ipset creat black_list hash:ip")
+except:
+    print("SET EXISTS")
+try:
+    os.system("iptables -A INPUT -m set --match-set black_list src -j DROP")
+except:
+    print("IPTABLES RULE EXISTS")
 def pktHandle(i):
         if i.haslayer("IP"):
             sourceIP = i["IP"].src
         else:
             sourceIP = i.src
-        if sourceIP == "172.217.169.46":
-            print("SENT PACKET")
-        else:
-            print("Recieved Packet")
+        #if sourceIP == "172.217.169.46":
+            #print("SENT PACKET")
+        #else:
+            #print("Recieved Packet")
+        if sourceIP == "192.168.129.191":
+            print("PING DETECTED")
+            os.system("ipset add black_list "+sourceIP)
+            time.sleep(5)
+            os.system("ipset del black_list "+sourceIP)
+            exit()
         print(sourceIP)
 
 
@@ -26,4 +42,3 @@ print("TEST")
 #Testing
 
 scTest()
-
