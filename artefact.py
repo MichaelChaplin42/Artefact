@@ -24,7 +24,7 @@ def pktHandle(i):
         if sourceIP == "192.168.129.191":
             print("PING DETECTED")
             os.system("ipset add black_list "+sourceIP)
-            time.sleep(5)
+            time.sleep(10)
             os.system("ipset del black_list "+sourceIP)
             exit()
         print(sourceIP)
@@ -34,7 +34,7 @@ def pktHandle(i):
 def scTest():
     print("scTest")
     conf.verb = 0 
-    pkt = sniff(iface=r'enp0s3', prn=pktHandle)
+    pkt = sniff( prn=pktHandle)
 
 
 print("TEST")
