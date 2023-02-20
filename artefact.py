@@ -44,7 +44,7 @@ def ipFound(dict):
 def pktHandle(i):
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        if current_time >= "23:06:00":
+        if current_time <= "00:00:00":
             with open('Record.json','w') as file:
                 json.dump(record,file,indent=4)
             exit()
