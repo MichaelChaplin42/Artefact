@@ -4,7 +4,7 @@ from netaddr import *
 import os
 import time
 import json
-Threshold = 20
+Threshold = 52
 
 info = {"Vectors": [{
     'IP': 0,
@@ -29,7 +29,6 @@ def ipFound(dict):
     #print("COUNT UPDATED")
     diff = time.time() - dict['startTime']
     if diff > 60:
-        print
         record["Records"].append(dict)
         dict.update({'Count':1})
         dict.update({'startTime':time.time()})
@@ -37,14 +36,15 @@ def ipFound(dict):
     else:
         if dict['Count'] >= Threshold:
             print("Greater than threshold Blocking")
-            #dict.update({'Blocked':True})
+            dict.update([])
+            #dict.update({"Blocked":True})
             #os.system("ipset add black_list "+dict['IP'])
 
 
 def pktHandle(i):
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
-        if current_time <= "00:00:00":
+        if current_time <= "17:00:00":
             with open('Record.json','w') as file:
                 json.dump(record,file,indent=4)
             exit()
@@ -86,8 +86,11 @@ print("TEST")
 
 #Testing
 def test():
-    print("Test")
-    scTest()
+    with open("Record.json","r") as file:
+        data = json.load(file)
+        for i in data["Records"]:
+            if i['Count'] > 40:
+                print(i)
 
 
 run = True
@@ -99,7 +102,8 @@ while run == True:
         scTest()
     elif ans == 3:
         json_object = json.dumps(record, indent=4)
-        with open("Record.json","a+") as outfile:
+        with open("Record.json","w") as outfile:
+            outfile.seek(0)
             outfile.write(json_object)
         os.system("ipset del black_list 192.168.129.191")
         exit()
