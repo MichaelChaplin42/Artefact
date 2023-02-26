@@ -36,7 +36,9 @@ def ipFound(dict):
     else:
         if dict['Count'] >= Threshold:
             print("Greater than threshold Blocking")
-            dict.update([])
+            t = dict['startTime']
+            t = t.strftime("%H:%M:%S")
+            dict.update({'startTime':t})
             #dict.update({"Blocked":True})
             #os.system("ipset add black_list "+dict['IP'])
 
