@@ -14,15 +14,6 @@ info = {"Vectors": [{
 l = open('Record.json')
 record = json.load(l)
 l.close
-def firstStart():
-    try:
-        os.system("ipset creat black_list hash:ip")
-    except:
-        print("SET EXISTS")
-    try:
-        os.system("iptables -A INPUT -m set --match-set black_list src -j DROP")
-    except:
-        print("IPTABLES RULE EXISTS")
 #Creates iptables rule and ipset on first start
 def ipFound(dict):
     dict.update({'Count':dict['Count']+1})
@@ -99,7 +90,8 @@ run = True
 while run == True:
     ans = int(input("Press 1 for first setup. Press 2 for start. Press 3 for exit. Press 0 for Testing >"))
     if ans == 1:
-        firstStart()
+        print("T")
+        
     elif ans == 2:
         scTest()
     elif ans == 3:

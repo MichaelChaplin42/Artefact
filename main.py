@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from scapy.all import sniff
 import subprocess
+import checks
 
 def exit():
     print("EXITING")
@@ -23,10 +24,7 @@ def firstSetup():
 
 def sniffer():
     print("SNIFFING")
-    sniff(prn=pktHandle)
-
-def pktHandle(packet):
-    print(packet)
+    sniff(prn=checks.light)
 
 def testing():
     print("TESTING")
