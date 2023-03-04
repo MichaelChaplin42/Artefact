@@ -2,6 +2,7 @@
 from scapy.all import sniff
 import subprocess
 import checks
+import time
 
 def exit():
     print("EXITING")
@@ -24,7 +25,14 @@ def firstSetup():
 
 def sniffer():
     print("SNIFFING")
-    sniff(prn=checks.light)
+    sniff(prn=pkthandle)
+
+def pkthandle(pkt):
+    global logtime
+    if (time.time()-logtime) > 60:
+        logtime = time.time()
+        checks.log(checks.record)
+    checks.track(pkt)
 
 def testing():
     print("TESTING")
@@ -32,6 +40,7 @@ def testing():
 run = True
 print("AUTOMATED DDOS PROTECTION TOOL")
 while run == True:
+    logtime = time.time()
     print("Enter EXIT to EXIT")
     print("Enter 1 for first time set up. This will create the IP table rule and the IPSET blacklist")
     print("Enter 2 to run.")
@@ -42,6 +51,7 @@ while run == True:
     if ans == "1":
         firstSetup()
     if ans == "2":
+    
         sniffer()
     if ans == "3":
         testing()
