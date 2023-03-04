@@ -29,10 +29,13 @@ def sniffer():
 
 def pkthandle(pkt):
     global logtime
-    if (time.time()-logtime) > 60:
+    if (time.time()-logtime) >10:
         logtime = time.time()
         checks.log(checks.record)
-    checks.track(pkt)
+    ipcheck = checks.track(pkt)
+    if ipcheck != "Clear":
+        checks.incidentLog(ipcheck)
+        checks.volAttackCheck(ipcheck,checks.record)
 
 def testing():
     print("TESTING")
