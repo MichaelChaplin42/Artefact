@@ -34,7 +34,7 @@ def pkthandle(pkt):
         checks.log(checks.record)
     ipcheck = checks.track(pkt)
     if ipcheck != "Clear":
-        checks.incidentLog(ipcheck)
+        checks.incidentLog(ipcheck,blocked=False)
         checks.volAttackCheck(ipcheck,checks.record)
 
 def testing():
