@@ -10,7 +10,7 @@ def track(pkt):
     threshold = 200
     if pkt.haslayer("IP"):
         sourceIP = pkt["IP"].src
-        if sourceIP == "192.168.137.36":
+        if sourceIP == "192.168.139.110":
             pass
         else:
             if record['Records']:
