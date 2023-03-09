@@ -6,8 +6,10 @@ from datetime import date
 f = open('Record.json')
 record = json.load(f)
 f.close()
+
+#for every packet checks 
 def track(pkt):
-    threshold = 200
+    threshold = 20000
     if pkt.haslayer("IP"):
         sourceIP = pkt["IP"].src
         if sourceIP == "192.168.139.110":
@@ -64,6 +66,7 @@ def incidentLog(ip,blocked):
 
 def volAttackCheck(ip,record):
     isAttack = False
+    
     if ip['Count'] > 100:
         isAttack == True
         subprocess.check_call(['ipset','add','black_list',ip['IP']])
@@ -75,3 +78,22 @@ def volAttackCheck(ip,record):
                 i.update({'startTime':time.time()})
             elif isAttack == True:
                 i.update({'Blocked':True})
+
+def thresholdLog():
+    with open('Record.json', 'r') as file:
+        data = json.load(file)
+
+# Open a new text file for writing
+    with open('data.json', 'r') as file:
+        data2 = json.load(file)
+    for record in data['Records']:
+        
+        count = record['Count']
+        ip = record['IP']
+        new = {
+                'IP':ip,
+                'Count':count
+            }
+        data2['Records'].append(new)
+    with open('data.json', 'w') as file:
+        json.dump(data2, file,indent=4)

@@ -25,13 +25,25 @@ def firstSetup():
 
 def sniffer():
     print("SNIFFING")
+    global run 
+    run = time.time() + 8000
     sniff(prn=pkthandle)
 
 def pkthandle(pkt):
     global logtime
-    if (time.time()-logtime) >10:
+    global logtime2
+    sec = int(run-time.time())
+    sec1 = sec % 60
+    min = sec / 60 
+    print(int(min), "Minutes and",sec1,"Seconds left")
+    if sec < 0:
+        exit()
+    if (time.time()-logtime) >60:
         logtime = time.time()
         checks.log(checks.record)
+    if (time.time()-logtime2) > 600:
+        logtime2 = time.time()
+        checks.thresholdLog()
     ipcheck = checks.track(pkt)
     if ipcheck != "Clear":
         checks.incidentLog(ipcheck,blocked=False)
@@ -44,6 +56,7 @@ run = True
 print("AUTOMATED DDOS PROTECTION TOOL")
 while run == True:
     logtime = time.time()
+    logtime2 = time.time()
     print("Enter EXIT to EXIT")
     print("Enter 1 for first time set up. This will create the IP table rule and the IPSET blacklist")
     print("Enter 2 to run.")
