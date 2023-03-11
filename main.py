@@ -26,7 +26,7 @@ def firstSetup():
 def sniffer():
     print("SNIFFING")
     global run 
-    run = time.time() + 8000
+    run = time.time() + 36000
     sniff(prn=pkthandle)
 
 def pkthandle(pkt):
