@@ -16,7 +16,7 @@ f.close()
 def track(pkt):
 
     # Set the threshold for attack detection
-    threshold = 20000
+    threshold = 1000
 
     # Check if the packet has an IP layer
     if pkt.haslayer("IP"):
