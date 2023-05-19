@@ -35,23 +35,14 @@ def sniffer():
     print("SNIFFING")
     global run 
     run = time.time() + 36000
-    sniff(filter="src host 192.168.128.1",prn=pkthandle)
+    sniff(prn=pkthandle)
 
 # Function to handle each packet
 def pkthandle(pkt):
-    print("I")
     global logtime
     global logtime2
-    sec = int(run-time.time())
-    sec1 = sec % 60
-    min = sec / 60 
-    # Print time remaining before program exits due to time limit Just for testing
-    print(int(min), "Minutes and",sec1,"Seconds left")
-    # Exit program if time limit is reached
-    if sec < 0:
-        exit()
     # Logs the information that the system is actively tracking every 60 seconds
-    if (time.time()-logtime) >60:
+    if (time.time()-logtime) >5:
         logtime = time.time()
         checks.log(checks.record)
     # Create a backup log of the current log every 600 seconds that does not get replaced 
@@ -61,8 +52,9 @@ def pkthandle(pkt):
     ipcheck = checks.track(pkt)
     # If packet is flagged as a potential attack, log it and check for a volumetric attack
     if ipcheck != "Clear":
+        print(ipcheck)
         checks.incidentLog(ipcheck,blocked=False)
-        checks.volAttackCheck(ipcheck,checks.record)
+        checks.volAttackCheck(ipcheck)
 # Function for testing purposes only
 def testing():
     print("TESTING")

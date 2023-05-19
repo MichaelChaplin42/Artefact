@@ -11,12 +11,12 @@ from scapy.all import *
 f = open('Record.json')
 record = json.load(f)
 f.close()
-
+threshold = 1400
 # Define a function to track incoming packets
 def track(pkt):
 
     # Set the threshold for attack detection
-    threshold = 1400
+    
 
     # Check if the packet has an IP layer
     if pkt.haslayer("IP"):
@@ -43,6 +43,7 @@ def track(pkt):
                             if time.time()-i['startTime'] > 60:
                                 # If the packet count is above the threshold, return the IP address for further processing
                                 if i['Count'] > threshold :
+                                    print(i['IP'])
                                     return(i)
                                 # If the packet count is below the threshold, reset the count and start a new timer
                                 elif i['Count'] < threshold:
@@ -93,13 +94,17 @@ def incidentLog(ip,blocked):
         f.write(info+" "+str(blocked)+'\n')
 
 # Define a function to check for volumetric attacks
-def volAttackCheck(ip,record):
+def volAttackCheck(ip):
     isAttack = False
     # Check if the IP has sent more than a set threshold packets in the last minute
-    if ip['Count'] > 1400:
+    if ip['Count'] > threshold:
+        print(ip['Count'])
         isAttack == True
         # Add the IP to the blacklist using the 'ipset' command
-        subprocess.check_call(['ipset','add','black_list',ip['IP']])
+        try:
+            subprocess.check_call(['ipset','add','black_list',ip['IP']])
+        except:
+            pass
         # Log the incident in the 'LOG.txt' file
         incidentLog(ip,blocked=True)
     # Check if the IP is already in the record dictionary
@@ -112,8 +117,11 @@ def volAttackCheck(ip,record):
             # If the IP is an attacker, mark it as blocked
             elif isAttack == True:
                 i.update({'Blocked':True})
+    log(record)
+
 
 def thresholdLog():
+    print("Logging")
     # Load the contents of the JSON file into a dictionary
     with open('Record.json', 'r') as file:
         data = json.load(file)
