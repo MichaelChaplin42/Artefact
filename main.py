@@ -35,10 +35,11 @@ def sniffer():
     print("SNIFFING")
     global run 
     run = time.time() + 36000
-    sniff(prn=pkthandle)
+    sniff(filter="src host 192.168.128.1",prn=pkthandle)
 
 # Function to handle each packet
 def pkthandle(pkt):
+    print("I")
     global logtime
     global logtime2
     sec = int(run-time.time())

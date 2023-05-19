@@ -16,7 +16,7 @@ f.close()
 def track(pkt):
 
     # Set the threshold for attack detection
-    threshold = 1000
+    threshold = 1400
 
     # Check if the packet has an IP layer
     if pkt.haslayer("IP"):
@@ -96,7 +96,7 @@ def incidentLog(ip,blocked):
 def volAttackCheck(ip,record):
     isAttack = False
     # Check if the IP has sent more than a set threshold packets in the last minute
-    if ip['Count'] > 100:
+    if ip['Count'] > 1400:
         isAttack == True
         # Add the IP to the blacklist using the 'ipset' command
         subprocess.check_call(['ipset','add','black_list',ip['IP']])
